@@ -9,7 +9,7 @@ Expects run folders named like  B{batch_size}_LRp{lr_digits}_WD_{wd_label}, each
  
 Plots (saved to --out_dir):
     sweeping_weight_decay.png   val loss vs AdamW timescale tau = 1/(wd*lr*T), runs with lr == --wd_sweep_lr
-    sweeping_learning_rate.png  val loss vs learning rate, runs with wd == --lr_sweep_wd
+    sweeping_learning_rate.png  val loss vs AdamW timescale tau, runs with wd == --lr_sweep_wd
     optimal_hp.png              optimal weight decay and optimal learning rate vs batch size
  
 Usage:
@@ -102,17 +102,17 @@ def plot_sweep(groups, xkey, xlabel, ylabel, title, out_path):
     """One viridis line per batch size (smallest purple, largest yellow); red marker at each minimum."""
     batch_sizes = sorted(groups)
     colors = plt.get_cmap("viridis")(np.linspace(0, 1, len(batch_sizes)))
-
+ 
     fig, ax = plt.subplots(figsize=(9, 6))
     for bs, color in zip(batch_sizes, colors):
         pts = sorted(groups[bs], key=lambda r: r[xkey])
         xs = np.array([r[xkey] for r in pts])
         ys = np.array([r["loss"] for r in pts])
-
+ 
         ax.plot(xs, ys, "-o", color=color, markersize=7, label=f"B = {bs}")
         i = int(np.argmin(ys))
         ax.plot(xs[i], ys[i], "o", color="red", markersize=9, markeredgecolor="black", zorder=5)
-
+ 
     ax.plot([], [], "o", color="red", markeredgecolor="black", label="lowest val loss (per B)")
     ax.set_xscale("log")
     ax.set_xlabel(xlabel)
@@ -123,12 +123,12 @@ def plot_sweep(groups, xkey, xlabel, ylabel, title, out_path):
     fig.tight_layout()
     fig.savefig(out_path, dpi=150)
     plt.close(fig)
-
-
+ 
+ 
 def plot_optimal_hp(best_wd, best_lr, out_path):
     fig, ax = plt.subplots(figsize=(8, 6))
     all_bs = sorted(set(best_wd) | set(best_lr))
-
+ 
     if best_wd:
         bs = sorted(best_wd)
         ax.plot(bs, [best_wd[b]["wd"] for b in bs], "-x", color="tab:blue",
@@ -137,7 +137,7 @@ def plot_optimal_hp(best_wd, best_lr, out_path):
         bs = sorted(best_lr)
         ax.plot(bs, [best_lr[b]["lr"] for b in bs], "-x", color="tab:orange",
                 markersize=10, markeredgewidth=2, label=r"Learning Rate $\eta$")
-
+ 
     ax.set_xscale("log", base=2)
     ax.set_yscale("log")
     ax.set_xticks(all_bs)
@@ -150,8 +150,8 @@ def plot_optimal_hp(best_wd, best_lr, out_path):
     fig.tight_layout()
     fig.savefig(out_path, dpi=150)
     plt.close(fig)
-
-
+ 
+ 
 def print_table(title, groups, best, xkey, xname):
     print(f"\n{title}")
     print(f"{'B':>6} {xname:>10} {'lr':>9} {'wd':>7} {'val_loss':>10}")
@@ -161,10 +161,10 @@ def print_table(title, groups, best, xkey, xname):
             mark = "  <- best" if r is best[bs] else ""
             print(f"{bs:>6} {r[xkey]:>10.4g} {r['lr']:>9.5f} {r['wd']:>7.4g} {r['loss']:>10.4f}{mark}")
         print()
-
-
+ 
+ 
 # ----------------------------------------------------------------------------- main
-
+ 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--log_dir", default="my_logs")
@@ -177,45 +177,46 @@ def main():
                         help="min = lowest val loss during training; last = mean of last --last_k evals")
     parser.add_argument("--last_k", type=int, default=5)
     args = parser.parse_args()
-
+ 
     runs = collect_runs(args.log_dir, args.metric, args.last_k)
     if not runs:
         raise SystemExit(f"No matching runs with val loss found in {args.log_dir}")
     os.makedirs(args.out_dir, exist_ok=True)
-
-    ylabel = "validation loss" if args.metric == "min" else f"validation loss (mean of last {args.last_k} evals)"
-
+ 
+    ylabel = "Validation Loss"
+    xlabel = r"AdamW timescale $\tau$"
+ 
     wd_groups = group_by_bs([r for r in runs if np.isclose(r["lr"], args.wd_sweep_lr)])
     lr_groups = group_by_bs([r for r in runs if np.isclose(r["wd"], args.lr_sweep_wd)])
     best_wd = best_per_bs(wd_groups)
     best_lr = best_per_bs(lr_groups)
-
+ 
     if wd_groups:
         p = os.path.join(args.out_dir, "sweeping_weight_decay.png")
-        plot_sweep(wd_groups, "tau", r"AdamW timescale $\tau = 1 / (\lambda \, \eta \, T)$", ylabel,
+        plot_sweep(wd_groups, "tau", xlabel, ylabel,
                    rf"Sweeping weight decay $\lambda$ ($\eta$ = {args.wd_sweep_lr:g})", p)
         print(f"[saved] {p}")
     else:
         print(f"[skip] weight decay plot: no runs with lr={args.wd_sweep_lr:g}")
-
+ 
     if lr_groups:
         p = os.path.join(args.out_dir, "sweeping_learning_rate.png")
-        plot_sweep(lr_groups, "lr", r"learning rate $\eta$", ylabel,
+        plot_sweep(lr_groups, "tau", xlabel, ylabel,
                    rf"Sweeping learning rate $\eta$ ($\lambda$ = {args.lr_sweep_wd:g})", p)
         print(f"[saved] {p}")
     else:
         print(f"[skip] learning rate plot: no runs with wd={args.lr_sweep_wd:g}")
-
+ 
     if best_wd or best_lr:
         p = os.path.join(args.out_dir, "optimal_hp.png")
         plot_optimal_hp(best_wd, best_lr, p)
         print(f"[saved] {p}")
-
+ 
     if wd_groups:
         print_table(f"Weight decay sweep (lr = {args.wd_sweep_lr:g})", wd_groups, best_wd, "tau", "tau")
     if lr_groups:
-        print_table(f"Learning rate sweep (wd = {args.lr_sweep_wd:g})", lr_groups, best_lr, "lr", "lr")
-
-
+        print_table(f"Learning rate sweep (wd = {args.lr_sweep_wd:g})", lr_groups, best_lr, "tau", "tau")
+ 
+ 
 if __name__ == "__main__":
     main()
