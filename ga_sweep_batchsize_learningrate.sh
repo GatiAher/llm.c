@@ -33,7 +33,7 @@ for batch_size in "${BATCH_SIZES[@]}"; do
             lr_label="${lr/./p}"
         fi
 
-        run_name="B${batch_size}_LRp${lr_label}_WD_${WD_LABEL}"
+        run_name="B${batch_size}_LR${lr_label}_WD_${WD_LABEL}"
 
         if [ -f "my_logs/${run_name}/main.log" ]; then
             echo "=== ${run_name} already has main.log, skipping ==="

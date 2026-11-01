@@ -26,9 +26,19 @@ import matplotlib.pyplot as plt
 import numpy as np
  
 TOTAL_TOKENS = 1638400  # step_size = TOTAL_TOKENS / batch_size, as in the sweep scripts
-RUN_RE = re.compile(r"^B(\d+)_LRp(\d+)_WD_(\d*)p(\d+)$")
+RUN_RE = re.compile(r"^B(\d+)_LR(\d*p?\d+)_WD_?(\d*p?\d+)$")
  
- 
+def parse_p_float(s: str) -> float:
+    if not s:
+        return 0.0
+    if 'p' in s:
+        # Converts '1p6' -> 1.6, 'p1' -> 0.1, 'p0006' -> 0.0006
+        return float(s.replace('p', '.'))
+    if s.startswith('0') and not s.startswith('0.'):
+        # Converts zero-padded numbers like '0003' -> 0.0003, '0192' -> 0.0192
+        return float(f"0.{s}")
+    return float(s)
+
 # ----------------------------------------------------------------------------- parsing
  
 def parse_logfile(logfile):
@@ -61,13 +71,15 @@ def collect_runs(log_dir, metric, last_k):
     runs = []
     for name in sorted(os.listdir(log_dir)):
         m = RUN_RE.match(name)
+        if not m:
+            continue
         logfile = os.path.join(log_dir, name, "main.log")
-        if not m or not os.path.isfile(logfile):
+        if not os.path.isfile(logfile):
             continue
  
         bs = int(m.group(1))
-        lr = float("0." + m.group(2))
-        wd = float(f"{m.group(3) or '0'}.{m.group(4)}")
+        lr = parse_p_float(m.group(2))
+        wd = parse_p_float(m.group(3))
         steps = TOTAL_TOKENS // bs
  
         streams = parse_logfile(logfile)
