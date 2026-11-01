@@ -6,10 +6,9 @@ set -u
 
 BATCH_SIZES=(32768 16384 8192 4096 2048)
 
-# Weight decay values and the matching label used in the run name
-# (decimal point replaced by "p", leading zero dropped, e.g. 0.025 -> p025)
-WD_VALUES=(0.025 0.05 0.1 0.2 0.4)
-WD_LABELS=(025   05   1   2   4)
+# Weight decay values
+WD_VALUES=(0.00078125 0.0015625 0.003125 0.00625 0.0125 0.8 1.6 3.2 6.4 12.8)
+
 
 TOTAL_TOKENS=1638400
 
@@ -22,8 +21,15 @@ for batch_size in "${BATCH_SIZES[@]}"; do
 
     for i in "${!WD_VALUES[@]}"; do
         weight_decay=${WD_VALUES[$i]}
-        wd_label=${WD_LABELS[$i]}
-        run_name="B${batch_size}_LRp0006_WD_p${wd_label}"
+
+	# Format label: '0.05' -> 'p05', '1.6' -> '1p6'
+        if [[ "$weight_decay" == 0.* ]]; then
+            wd_label="p${weight_decay#0.}"
+        else
+            wd_label="${weight_decay/./p}"
+        fi
+
+        run_name="B${batch_size}_LRp0006_WD_${wd_label}"
 
         echo "=== ${run_name} | steps=${step_size} warmup=${warm_up} wd=${weight_decay} ==="
 
