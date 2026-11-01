@@ -58,7 +58,7 @@ for batch_size in "${BATCH_SIZES[@]}"; do
         ./train_gpt2cu \
             -i "/home/ubuntu/mydata/fineweb10B/fineweb_train_*.bin" \
             -j "/home/ubuntu/mydata/fineweb10B/fineweb_val_*.bin" \
-            -o ""model_log_loss/${MODEL}/${run_name}" \
+            -o "model_log_loss/${MODEL}/${run_name}" \
             -e "my_models/${MODEL}.bin" \
             -b "${micro_b}" -t 1024 \
             -d "${batch_size}" \
