@@ -1,0 +1,311 @@
+Multi-GPU support is disabled. Using a single GPU.
++-----------------------+----------------------------------------------------+
+| Parameter             | Value                                              |
++-----------------------+----------------------------------------------------+
+| train data pattern    | /home/ubuntu/mydata/fineweb10B/fineweb_train_*.bin |
+| val data pattern      | /home/ubuntu/mydata/fineweb10B/fineweb_val_*.bin   |
+| output log dir        | my_logs/B8192_LRp19p6608_WD_p1                     |
+| checkpoint_every      | 0                                                  |
+| resume                | 0                                                  |
+| micro batch size B    | 8                                                  |
+| sequence length T     | 1024                                               |
+| total batch size      | 8192                                               |
+| LR scheduler          | cosine                                             |
+| learning rate (LR)    | 1.966080e+01                                       |
+| warmup iterations     | 20                                                 |
+| final LR fraction     | 1.000000e+00                                       |
+| weight decay          | 1.000000e-01                                       |
+| skip update lossz     | 0.000000                                           |
+| skip update gradz     | 0.000000                                           |
+| max_steps             | 200                                                |
+| val_loss_every        | 5                                                  |
+| val_max_steps         | 20                                                 |
+| sample_every          | 0                                                  |
+| genT                  | 64                                                 |
+| overfit_single_batch  | 0                                                  |
+| use_master_weights    | enabled                                            |
+| gelu_fusion           | 0                                                  |
+| recompute             | 1                                                  |
++-----------------------+----------------------------------------------------+
+| device                | NVIDIA A10G                                        |
+| peak TFlops           | -1.0                                               |
+| precision             | BF16                                               |
++-----------------------+----------------------------------------------------+
+| weight init method    | my_models/mup_base_1l_64w.bin                      |
+| max_sequence_length T | 1024                                               |
+| vocab_size V          | 50257                                              |
+| padded_vocab_size Vp  | 50304                                              |
+| num_layers L          | 1                                                  |
+| num_heads NH          | 1                                                  |
+| channels C            | 64                                                 |
+| num_parameters        | 3335104                                            |
++-----------------------+----------------------------------------------------+
+| train_num_batches     | 200                                                |
+| val_num_batches       | 20                                                 |
++-----------------------+----------------------------------------------------+
+| run hellaswag         | no                                                 |
++-----------------------+----------------------------------------------------+
+| num_processes         | 1                                                  |
+| zero_stage            | 1                                                  |
++-----------------------+----------------------------------------------------+
+HellaSwag eval not found at dev/data/hellaswag/hellaswag_val.bin, skipping its evaluation
+You can run `python dev/data/hellaswag.py` to export and use it with `-h 1`.
+num_parameters: 3335104 => bytes: 6670208
+allocated 6 MiB for model parameters
+batch_size B=8 * seq_len T=1024 * num_processes=1 and total_batch_size=8192
+=> setting grad_accum_steps=1
+---
+WARNING: Failed to open the tokenizer file gpt2_tokenizer.bin
+The Tokenizer is a new feature added April 14 2024.
+Re-run `python train_gpt2.py` to write it
+---
+allocating 6 MiB for parameter gradients
+allocating 809 MiB for activations
+allocating 12 MiB for AdamW optimizer state m
+allocating 12 MiB for AdamW optimizer state v
+allocating 12 MiB for master copy of params
+device memory usage: 1162 MiB / 22598 MiB
+memory per sequence: 101 MiB
+ -> estimated maximum batch size: 219
+val loss 10.825382
+step    1/200 | loss 10.824905 (+nanz)| norm 0.1157 (+nanz)| lr 9.83e-01 | 379.55 ms | -100.0% bf16 MFU | 21583 tok/s
+step    2/200 | loss     inf (+nanz)| norm 8.0259 (+nanz)| lr 1.97e+00 | 10.01 ms | -100.0% bf16 MFU | 818783 tok/s
+step    3/200 | loss     inf (+nanz)| norm 32.3897 (+nanz)| lr 2.95e+00 | 9.97 ms | -100.0% bf16 MFU | 820091 tok/s
+step    4/200 | loss     inf (+nanz)| norm 54.0220 (+nanz)| lr 3.93e+00 | 9.97 ms | -100.0% bf16 MFU | 820603 tok/s
+step    5/200 | loss     inf (+nanz)| norm 58.7280 (+nanz)| lr 4.92e+00 | 9.99 ms | -100.0% bf16 MFU | 820491 tok/s
+val loss inf
+step    6/200 | loss     inf (+nanz)| norm 93.9035 (+nanz)| lr 5.90e+00 | 9.99 ms | -100.0% bf16 MFU | 820414 tok/s
+step    7/200 | loss     inf (+nanz)| norm 65.0106 (+nanz)| lr 6.88e+00 | 9.99 ms | -100.0% bf16 MFU | 820398 tok/s
+step    8/200 | loss     inf (+nanz)| norm 45.7402 (+nanz)| lr 7.86e+00 | 9.99 ms | -100.0% bf16 MFU | 820401 tok/s
+step    9/200 | loss     inf (+nanz)| norm 60.3592 (+nanz)| lr 8.85e+00 | 9.98 ms | -100.0% bf16 MFU | 820459 tok/s
+step   10/200 | loss     inf (+nanz)| norm 4090.6436 (+nanz)| lr 9.83e+00 | 9.98 ms | -100.0% bf16 MFU | 820561 tok/s
+val loss inf
+step   11/200 | loss     inf (+nanz)| norm 77.5627 (+nanz)| lr 1.08e+01 | 9.99 ms | -100.0% bf16 MFU | 820522 tok/s
+step   12/200 | loss     inf (+nanz)| norm 60.4057 (+nanz)| lr 1.18e+01 | 9.99 ms | -100.0% bf16 MFU | 820488 tok/s
+step   13/200 | loss     inf (+nanz)| norm 59.9367 (+nanz)| lr 1.28e+01 | 9.98 ms | -100.0% bf16 MFU | 820504 tok/s
+step   14/200 | loss     inf (+nanz)| norm 81.1386 (+nanz)| lr 1.38e+01 | 9.97 ms | -100.0% bf16 MFU | 820640 tok/s
+step   15/200 | loss     inf (+nanz)| norm 92.9354 (+nanz)| lr 1.47e+01 | 9.97 ms | -100.0% bf16 MFU | 820717 tok/s
+val loss inf
+step   16/200 | loss     inf (+nanz)| norm 86.4345 (+nanz)| lr 1.57e+01 | 9.97 ms | -100.0% bf16 MFU | 820817 tok/s
+step   17/200 | loss     inf (+nanz)| norm 103.1159 (+nanz)| lr 1.67e+01 | 9.98 ms | -100.0% bf16 MFU | 820826 tok/s
+step   18/200 | loss     inf (+nanz)| norm 93.6391 (+nanz)| lr 1.77e+01 | 9.97 ms | -100.0% bf16 MFU | 820907 tok/s
+step   19/200 | loss     inf (+nanz)| norm 127.2498 (+nanz)| lr 1.87e+01 | 9.95 ms | -100.0% bf16 MFU | 821073 tok/s
+step   20/200 | loss     inf (+nanz)| norm 137.4262 (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821055 tok/s
+val loss inf
+step   21/200 | loss     inf (+nanz)| norm 104.2043 (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821007 tok/s
+step   22/200 | loss     inf (+nanz)| norm 208.4435 (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821074 tok/s
+step   23/200 | loss     inf (+nanz)| norm 180.8048 (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821131 tok/s
+step   24/200 | loss     inf (+nanz)| norm 7160.6011 (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821213 tok/s
+step   25/200 | loss     inf (+nanz)| norm    inf (+nanz)| lr 1.97e+01 | 10.00 ms | -100.0% bf16 MFU | 821082 tok/s
+val loss inf
+step   26/200 | loss     inf (+nanz)| norm 13597.4961 (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821078 tok/s
+step   27/200 | loss     inf (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821006 tok/s
+step   28/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 820985 tok/s
+step   29/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 820946 tok/s
+step   30/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821031 tok/s
+val loss nan
+step   31/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 820986 tok/s
+step   32/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 820989 tok/s
+step   33/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 820998 tok/s
+step   34/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821009 tok/s
+step   35/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821046 tok/s
+val loss nan
+step   36/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821091 tok/s
+step   37/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821037 tok/s
+step   38/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 10.00 ms | -100.0% bf16 MFU | 820952 tok/s
+step   39/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 820972 tok/s
+step   40/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 820990 tok/s
+val loss nan
+step   41/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821069 tok/s
+step   42/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821102 tok/s
+step   43/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821153 tok/s
+step   44/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821197 tok/s
+step   45/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 10.00 ms | -100.0% bf16 MFU | 821107 tok/s
+val loss nan
+step   46/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.95 ms | -100.0% bf16 MFU | 821230 tok/s
+step   47/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821191 tok/s
+step   48/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 10.00 ms | -100.0% bf16 MFU | 821076 tok/s
+step   49/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821084 tok/s
+step   50/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821135 tok/s
+val loss nan
+step   51/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821188 tok/s
+step   52/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821188 tok/s
+step   53/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821161 tok/s
+step   54/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821240 tok/s
+step   55/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821273 tok/s
+val loss nan
+step   56/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 10.01 ms | -100.0% bf16 MFU | 821125 tok/s
+step   57/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821210 tok/s
+step   58/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821204 tok/s
+step   59/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821281 tok/s
+step   60/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821222 tok/s
+val loss nan
+step   61/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821174 tok/s
+step   62/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821141 tok/s
+step   63/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821133 tok/s
+step   64/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821190 tok/s
+step   65/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821146 tok/s
+val loss nan
+step   66/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821171 tok/s
+step   67/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821206 tok/s
+step   68/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821232 tok/s
+step   69/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821246 tok/s
+step   70/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821292 tok/s
+val loss nan
+step   71/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821299 tok/s
+step   72/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821324 tok/s
+step   73/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821266 tok/s
+step   74/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 10.00 ms | -100.0% bf16 MFU | 821164 tok/s
+step   75/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821187 tok/s
+val loss nan
+step   76/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821200 tok/s
+step   77/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821165 tok/s
+step   78/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821226 tok/s
+step   79/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821222 tok/s
+step   80/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821199 tok/s
+val loss nan
+step   81/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821217 tok/s
+step   82/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821195 tok/s
+step   83/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821218 tok/s
+step   84/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821269 tok/s
+step   85/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821259 tok/s
+val loss nan
+step   86/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821320 tok/s
+step   87/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821326 tok/s
+step   88/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821257 tok/s
+step   89/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821286 tok/s
+step   90/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821330 tok/s
+val loss nan
+step   91/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821293 tok/s
+step   92/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821252 tok/s
+step   93/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821299 tok/s
+step   94/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821314 tok/s
+step   95/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821282 tok/s
+val loss nan
+step   96/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 10.00 ms | -100.0% bf16 MFU | 821194 tok/s
+step   97/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 10.00 ms | -100.0% bf16 MFU | 821078 tok/s
+step   98/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 10.00 ms | -100.0% bf16 MFU | 820997 tok/s
+step   99/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821075 tok/s
+step  100/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821052 tok/s
+val loss nan
+step  101/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821100 tok/s
+step  102/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821028 tok/s
+step  103/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821101 tok/s
+step  104/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821109 tok/s
+step  105/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821128 tok/s
+val loss nan
+step  106/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821216 tok/s
+step  107/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821219 tok/s
+step  108/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821222 tok/s
+step  109/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821228 tok/s
+step  110/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821275 tok/s
+val loss nan
+step  111/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821330 tok/s
+step  112/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821371 tok/s
+step  113/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821414 tok/s
+step  114/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 10.01 ms | -100.0% bf16 MFU | 821271 tok/s
+step  115/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821282 tok/s
+val loss nan
+step  116/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821337 tok/s
+step  117/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821305 tok/s
+step  118/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821358 tok/s
+step  119/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821313 tok/s
+step  120/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821333 tok/s
+val loss nan
+step  121/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821310 tok/s
+step  122/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.95 ms | -100.0% bf16 MFU | 821394 tok/s
+step  123/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821404 tok/s
+step  124/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821341 tok/s
+step  125/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821371 tok/s
+val loss nan
+step  126/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.94 ms | -100.0% bf16 MFU | 821493 tok/s
+step  127/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821519 tok/s
+step  128/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821581 tok/s
+step  129/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.94 ms | -100.0% bf16 MFU | 821718 tok/s
+step  130/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821718 tok/s
+val loss nan
+step  131/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821739 tok/s
+step  132/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821645 tok/s
+step  133/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821647 tok/s
+step  134/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.95 ms | -100.0% bf16 MFU | 821728 tok/s
+step  135/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821713 tok/s
+val loss nan
+step  136/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821720 tok/s
+step  137/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.95 ms | -100.0% bf16 MFU | 821780 tok/s
+step  138/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821827 tok/s
+step  139/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821820 tok/s
+step  140/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821762 tok/s
+val loss nan
+step  141/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821814 tok/s
+step  142/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821832 tok/s
+step  143/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821840 tok/s
+step  144/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821874 tok/s
+step  145/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.94 ms | -100.0% bf16 MFU | 822001 tok/s
+val loss nan
+step  146/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821964 tok/s
+step  147/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821917 tok/s
+step  148/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821907 tok/s
+step  149/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821804 tok/s
+step  150/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821809 tok/s
+val loss nan
+step  151/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821853 tok/s
+step  152/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821868 tok/s
+step  153/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821918 tok/s
+step  154/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 10.00 ms | -100.0% bf16 MFU | 821771 tok/s
+step  155/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821699 tok/s
+val loss nan
+step  156/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821688 tok/s
+step  157/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821665 tok/s
+step  158/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821665 tok/s
+step  159/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821625 tok/s
+step  160/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821668 tok/s
+val loss nan
+step  161/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821657 tok/s
+step  162/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821605 tok/s
+step  163/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.95 ms | -100.0% bf16 MFU | 821691 tok/s
+step  164/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821684 tok/s
+step  165/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821629 tok/s
+val loss nan
+step  166/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821646 tok/s
+step  167/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821621 tok/s
+step  168/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821683 tok/s
+step  169/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821610 tok/s
+step  170/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 10.00 ms | -100.0% bf16 MFU | 821480 tok/s
+val loss nan
+step  171/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821547 tok/s
+step  172/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821576 tok/s
+step  173/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821531 tok/s
+step  174/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821557 tok/s
+step  175/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821575 tok/s
+val loss nan
+step  176/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821570 tok/s
+step  177/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821538 tok/s
+step  178/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821518 tok/s
+step  179/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821575 tok/s
+step  180/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821612 tok/s
+val loss nan
+step  181/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821630 tok/s
+step  182/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821666 tok/s
+step  183/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821686 tok/s
+step  184/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821703 tok/s
+step  185/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821696 tok/s
+val loss nan
+step  186/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.95 ms | -100.0% bf16 MFU | 821756 tok/s
+step  187/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821770 tok/s
+step  188/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821796 tok/s
+step  189/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821760 tok/s
+step  190/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821736 tok/s
+val loss nan
+step  191/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821708 tok/s
+step  192/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821624 tok/s
+step  193/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821630 tok/s
+step  194/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821654 tok/s
+step  195/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821644 tok/s
+val loss nan
+step  196/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.97 ms | -100.0% bf16 MFU | 821662 tok/s
+step  197/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821714 tok/s
+step  198/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.96 ms | -100.0% bf16 MFU | 821744 tok/s
+step  199/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.98 ms | -100.0% bf16 MFU | 821686 tok/s
+step  200/200 | loss     nan (+nanz)| norm    nan (+nanz)| lr 1.97e+01 | 9.99 ms | -100.0% bf16 MFU | 821610 tok/s
+val loss nan
+total average iteration time: 9.973174 ms

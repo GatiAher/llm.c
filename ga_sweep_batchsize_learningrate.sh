@@ -7,8 +7,8 @@ set -u
 BATCH_SIZES=(32768 16384 8192 4096 2048)
 
 # Learning rates (doubling grid) and their run-name labels ("p" stands for "0.")
-LR_VALUES=(0.0003 0.0006 0.0012 0.0024 0.0048 0.0096 0.0192)
-LR_LABELS=(0003   0006   0012   0024   0048   0096   0192)
+# LR_VALUES=(0.0003 0.0006 0.0012 0.0024 0.0048 0.0096 0.0192)
+LR_VALUES=(0.00000029296875 0.0000005859375 0.000001171875 0.00000234375 0.0000046875 0.000009375 0.00001875 0.0000375 0.000075 0.00015 0.0384 0.0768 0.1536 0.3072 0.6144 1.2288 2.4576 4.9152 9.8304 19.6608)
 
 WEIGHT_DECAY=0.1
 WD_LABEL=p1
@@ -24,8 +24,16 @@ for batch_size in "${BATCH_SIZES[@]}"; do
     if [ "$micro_b" -gt 32 ]; then micro_b=32; fi
 
     for i in "${!LR_VALUES[@]}"; do
-        lr=${LR_VALUES[$i]}
-        run_name="B${batch_size}_LRp${LR_LABELS[$i]}_WD_${WD_LABEL}"
+	lr=${LR_VALUES[$i]}
+	
+        # Format label: '0.05' -> 'p05', '1.6' -> '1p6'
+        if [[ "$lr" == 0.* ]]; then
+            lr_label="p${lr#0.}"
+        else
+            lr_label="${lr/./p}"
+        fi
+
+        run_name="B${batch_size}_LRp${lr_label}_WD_${WD_LABEL}"
 
         if [ -f "my_logs/${run_name}/main.log" ]; then
             echo "=== ${run_name} already has main.log, skipping ==="
