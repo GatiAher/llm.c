@@ -24,8 +24,21 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
- 
-TOTAL_TOKENS = 1638400  # step_size = TOTAL_TOKENS / batch_size, as in the sweep scripts
+
+MODEL="mup_tiniest_1L"
+
+case "$MODEL" in
+  *"mup_tiniest_1L"*) PARAMS=3332096 ;;
+  *"mup_tinier_2L"*)  PARAMS=6960768 ;;
+  *"mup_tiny_3L"*)    PARAMS=11180928 ;;
+  *)
+    echo "Error: Unknown model '$MODEL'" >&2
+    exit 1
+    ;;
+esac
+
+TOTAL_TOKENS=$((20 * PARAMS)) # step_size = TOTAL_TOKENS / batch_size, as in the sweep scripts
+
 RUN_RE = re.compile(r"^B(\d+)_LR(\d*p?\d+)_WD_?(\d*p?\d+)$")
  
 def parse_p_float(s: str) -> float:

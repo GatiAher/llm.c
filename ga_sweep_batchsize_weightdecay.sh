@@ -4,17 +4,30 @@
 
 set -u
 
+MODEL="mup_tiniest_1L"
+
+case "$MODEL" in
+  *"mup_tiniest_1L"*) PARAMS=3332096 ;;
+  *"mup_tinier_2L"*)  PARAMS=6960768 ;;
+  *"mup_tiny_3L"*)    PARAMS=11180928 ;;
+  *)
+    echo "Error: Unknown model '$MODEL'" >&2
+    exit 1
+    ;;
+esac
+
+TOTAL_TOKENS=$((20 * PARAMS))
+
 BATCH_SIZES=(32768 16384 8192 4096 2048)
 
 # Weight decay values
-# WD_VALUES=(0.025 0.05 0.1 0.2 0.4)
-# WD_VALUES=(0.00078125 0.0015625 0.003125 0.00625 0.0125 0.8 1.6 3.2 6.4 12.8)
-WD_VALUES=(0.000390625 0.0001953125 0.00009765625 0.000048828125 0.0000244140625 0.00001220703125 0.000006103515625 0.0000030517578125 0.00000152587890625 0.000000762939453125)
+WD_VALUES=(0.000390625 0.0001953125 0.00009765625 0.000048828125 0.0000244140625 0.00001220703125 0.000006103515625 0.0000030517578125 0.00000152587890625 0.000000762939453125 0.00078125 0.0015625 0.003125 0.00625 0.0125 0.025 0.05 0.1 0.2 0.4 0.8 1.6 3.2 6.4 12.8)
 
+LR_VALUE=0.0006
+LR_LABEL="p0006"
 
-TOTAL_TOKENS=1638400
-
-mkdir -p my_logs my_logs_output
+mkdir -p model_log_loss
+mkdir -p verbose_outputs
 
 for batch_size in "${BATCH_SIZES[@]}"; do
     step_size=$(( TOTAL_TOKENS / batch_size ))
@@ -31,17 +44,22 @@ for batch_size in "${BATCH_SIZES[@]}"; do
             wd_label="${weight_decay/./p}"
         fi
 
-        run_name="B${batch_size}_LRp0006_WD_${wd_label}"
+        run_name="B${batch_size}_LRp${LR_LABEL}_WD_${wd_label}"
+
+	mkdir -p "model_log_loss/${MODEL}/${run_name}"
+
+	if [ -f "model_log_loss/${MODEL}/${run_name}/main.log" ]; then
+            echo "=== ${run_name} already has main.log, skipping ==="
+            continue
+        fi
 
         echo "=== ${run_name} | steps=${step_size} warmup=${warm_up} wd=${weight_decay} ==="
-
-        mkdir -p "my_logs/${run_name}"
 
         ./train_gpt2cu \
             -i "/home/ubuntu/mydata/fineweb10B/fineweb_train_*.bin" \
             -j "/home/ubuntu/mydata/fineweb10B/fineweb_val_*.bin" \
-            -o "my_logs/${run_name}" \
-            -e "my_models/mup_base_1l_64w.bin" \
+            -o ""model_log_loss/${MODEL}/${run_name}" \
+            -e "my_models/${MODEL}.bin" \
             -b "${micro_b}" -t 1024 \
             -d "${batch_size}" \
             -r 1 -z 1 \
@@ -49,15 +67,15 @@ for batch_size in "${BATCH_SIZES[@]}"; do
             -s 0 \
             -x "${step_size}" \
             -u "${warm_up}" \
-            -l 0.0006 \
+            -l ${LR_VALUE} \
             -c "${weight_decay}" \
             -me 1 \
             -mm 1 \
-            -mw 64 &> "my_logs_output/${run_name}.txt"
-
+            -mw 64 &> "verbose_outputs/${MODEL}___${run_name}.txt"
+	
         status=$?
         if [ $status -ne 0 ]; then
-            echo "    WARNING: ${run_name} exited with status ${status} (see my_logs_output/${run_name}.txt)"
+            echo "    WARNING: ${run_name} exited with status ${status} (see verbose_outputs/${MODEL}___${run_name}.txt)"
         fi
     done
 done
