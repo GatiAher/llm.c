@@ -107,6 +107,15 @@ def collect_runs(log_dir, metric, last_k):
     return runs
  
  
+def in_range(x, lo, hi):
+    # Inclusive bounds with a small tolerance for float parsing; None means unbounded.
+    if lo is not None and x < lo and not np.isclose(x, lo):
+        return False
+    if hi is not None and x > hi and not np.isclose(x, hi):
+        return False
+    return True
+
+
 def group_by_bs(runs):
     groups = {}
     for r in runs:
@@ -199,9 +208,15 @@ def main():
     parser.add_argument("--metric", choices=["min", "last"], default="min",
                         help="min = lowest val loss during training; last = mean of last --last_k evals")
     parser.add_argument("--last_k", type=int, default=5)
+    parser.add_argument("--lr_min", type=float, default=None, help="only plot runs with lr >= this")
+    parser.add_argument("--lr_max", type=float, default=None, help="only plot runs with lr <= this")
+    parser.add_argument("--wd_min", type=float, default=None, help="only plot runs with wd >= this")
+    parser.add_argument("--wd_max", type=float, default=None, help="only plot runs with wd <= this")
     args = parser.parse_args()
- 
+
     runs = collect_runs(args.log_dir, args.metric, args.last_k)
+    runs = [r for r in runs if in_range(r["lr"], args.lr_min, args.lr_max)
+                           and in_range(r["wd"], args.wd_min, args.wd_max)]
     if not runs:
         raise SystemExit(f"No matching runs with val loss found in {args.log_dir}")
     os.makedirs(args.out_dir, exist_ok=True)
