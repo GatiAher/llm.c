@@ -37,8 +37,8 @@ elif MODEL == "mup_tiny_3L":
     
 TOTAL_TOKENS=20 * PARAMS # step_size = TOTAL_TOKENS / batch_size, as in the sweep scripts
 
-RUN_RE = re.compile(r"^B(\d+)_LR(\d*p?\d+)_WD_?(\d*p?\d+)$")
- 
+RUN_RE = re.compile(r"^B(\d+)_LR(p{0,2}\d*p?\d+)_WD_?(\d*p?\d+)$")
+
 def parse_p_float(s: str) -> float:
     if not s:
         return 0.0
@@ -89,7 +89,7 @@ def collect_runs(log_dir, metric, last_k):
             continue
  
         bs = int(m.group(1))
-        lr = parse_p_float(m.group(2))
+        lr = parse_p_float(m.group(2).replace("pp", "p"))
         wd = parse_p_float(m.group(3))
         steps = TOTAL_TOKENS // bs
  
