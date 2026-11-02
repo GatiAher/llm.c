@@ -26,18 +26,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 MODEL="mup_tiniest_1L"
+PARAMS=3332096
 
-case "$MODEL" in
-  *"mup_tiniest_1L"*) PARAMS=3332096 ;;
-  *"mup_tinier_2L"*)  PARAMS=6960768 ;;
-  *"mup_tiny_3L"*)    PARAMS=11180928 ;;
-  *)
-    echo "Error: Unknown model '$MODEL'" >&2
-    exit 1
-    ;;
-esac
-
-TOTAL_TOKENS=$((20 * PARAMS)) # step_size = TOTAL_TOKENS / batch_size, as in the sweep scripts
+if MODEL == "mup_tiniest_1L":
+    PARAMS=3332096
+elif MODEL == "mup_tinier_2L":
+    PARAMS=6960768
+elif MODEL == "mup_tiny_3L":
+    PARAMS=11180928
+    
+TOTAL_TOKENS=20 * PARAMS # step_size = TOTAL_TOKENS / batch_size, as in the sweep scripts
 
 RUN_RE = re.compile(r"^B(\d+)_LR(\d*p?\d+)_WD_?(\d*p?\d+)$")
  
