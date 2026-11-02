@@ -4,7 +4,7 @@
 
 set -u
 
-MODEL="mup_tiniest_1L"
+MODEL="mup_tinier_2L"
 
 case "$MODEL" in
   *"mup_tiniest_1L"*) PARAMS=3332096 ;;
@@ -18,7 +18,7 @@ esac
 
 TOTAL_TOKENS=$((20 * PARAMS))
 
-BATCH_SIZES=(2048 65536 131072 262144 524288)
+BATCH_SIZES=(65536 131072 262144 524288)
 #(32768 16384 8192 4096 2048)
 
 # Learning rates (doubling grid) and their run-name labels ("p" stands for "0.")
