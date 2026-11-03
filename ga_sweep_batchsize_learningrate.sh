@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Sweep batch size x learning rate for llm.c train_gpt2cu, weight decay fixed at 0.1.
-# Run with:  nohup ./run_lr_sweep.sh > my_logs_output/lr_sweep_progress.txt 2>&1 &
+# Run with:  nohup ./ga_sweep_batchsize_learningrate.sh > my_logs_output/lr_sweep_progress.txt 2>&1 &
+# Safe to launch several copies at once: each run is claimed atomically, so copies never duplicate work.
+# Pick the GPU per copy with CUDA_VISIBLE_DEVICES, e.g.
+#   CUDA_VISIBLE_DEVICES=0 nohup ./ga_sweep_batchsize_learningrate.sh > my_logs_output/lr_sweep_progress_0.txt 2>&1 &
+#   CUDA_VISIBLE_DEVICES=1 nohup ./ga_sweep_batchsize_learningrate.sh > my_logs_output/lr_sweep_progress_1.txt 2>&1 &
 
 set -u
 
@@ -67,6 +71,13 @@ for run in "${RUNS[@]}"; do
             continue
         fi
 
+        # mkdir is atomic, so only one parallel copy of this script gets to claim the run
+        claim="model_log_loss/${MODEL}/${run_name}/.claimed"
+        if ! mkdir "$claim" 2>/dev/null; then
+            echo "=== ${run_name} claimed by another sweep, skipping ==="
+            continue
+        fi
+
         echo "=== ${run_name} | steps=${step_size} warmup=${warm_up} lr=${lr} wd=${WEIGHT_DECAY} micro_b=${micro_b} ==="
 
         ./train_gpt2cu \
@@ -91,6 +102,7 @@ for run in "${RUNS[@]}"; do
         if [ $status -ne 0 ]; then
             echo "    WARNING: ${run_name} exited with status ${status} (see verbose_outputs/${MODEL}___${run_name}.txt)"
         fi
+        rmdir "$claim"
     done
 done
 
