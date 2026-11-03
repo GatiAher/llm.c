@@ -4,7 +4,7 @@
 
 set -u
 
-MODEL="mup_tinier_2L"
+MODEL="mup_tiny_3L"
 
 case "$MODEL" in
   *"mup_tiniest_1L"*) PARAMS=3332096 ;;
@@ -18,14 +18,20 @@ esac
 
 TOTAL_TOKENS=$((20 * PARAMS))
 
-# BATCH_SIZES=(32768 16384 8192 4096 2048)
-BATCH_SIZES=(65536 131072 262144 524288)
-#(65536 131072 262144 524288)
-#(32768 16384 8192 4096 2048)
-
-# Learning rates (doubling grid) and their run-name labels ("p" stands for "0.")
-LR_VALUES=(0.0384 0.0768 0.1536)
-# LR_VALUES=(0.0003 0.0006 0.0012 0.0024 0.0048 0.0096 0.0192)
+# Runs as "batch_size:lr lr ..." (doubling grid; labels use "p" for "0.").
+# Fills out the tau bowl for mup_tiny_3L; fast large-batch runs first.
+RUNS=(
+    "524288:0.0768 0.1536 0.3072"
+    "262144:0.0768"
+    "131072:0.0768"
+    "65536:0.0006"
+    "32768:0.0006 0.0003"
+    "16384:0.0006 0.0003"
+    "8192:0.0006 0.0003 0.00015"
+    "4096:0.0006 0.0003 0.00015"
+    "2048:0.0006 0.0003 0.00015 0.000075"
+)
+# Full grid:
 # LR_VALUES=(0.00000029296875 0.0000005859375 0.000001171875 0.00000234375 0.0000046875 0.000009375 0.00001875 0.0000375 0.000075 0.00015 0.0003 0.0006 0.0012 0.0024 0.0048 0.0096 0.0192 0.0384 0.0768 0.1536 0.3072 0.6144 1.2288 2.4576 4.9152 9.8304 19.6608)
 
 WEIGHT_DECAY=0.1
@@ -34,7 +40,9 @@ WD_LABEL=p1
 mkdir -p model_log_loss
 mkdir -p verbose_outputs
 
-for batch_size in "${BATCH_SIZES[@]}"; do
+for run in "${RUNS[@]}"; do
+    batch_size=${run%%:*}
+    read -r -a LR_VALUES <<< "${run#*:}"
     step_size=$(( TOTAL_TOKENS / batch_size ))
     warm_up=$(( step_size / 10 ))       # 0.10 * step_size
     micro_b=$(( batch_size / 1024 ))    # B*T must divide total batch size
