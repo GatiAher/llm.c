@@ -105,6 +105,10 @@ def collect_runs(log_dir, metric, last_k, total_tokens):
         if "tel" not in streams:
             print(f"[skip] {name}: no validation loss in main.log")
             continue
+        last_step = int(streams["tel"][0][-1])
+        if last_step < steps:
+            print(f"[skip] {name}: incomplete run (last eval step {last_step} of {steps})")
+            continue
         loss = val_metric(streams["tel"][1], metric, last_k)
         if not np.isfinite(loss):
             print(f"[skip] {name}: validation loss is NaN/inf (diverged?)")
