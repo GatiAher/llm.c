@@ -144,6 +144,17 @@ def group_by_bs(runs):
     return groups
 
 
+def drop_single_point(groups, label):
+    """Drop batch sizes whose sweep has only one point (no sweep to speak of)."""
+    for bs in sorted(bs for bs, rs in groups.items() if len(rs) < 2):
+        print(f"[skip] {label}: B={bs} has only one point")
+    return {bs: rs for bs, rs in groups.items() if len(rs) >= 2}
+
+
+def with_prefix(prefix, title):
+    return f"{prefix}: {title}" if prefix else title
+
+
 def best_per_bs(groups):
     return {bs: min(rs, key=lambda r: r["loss"]) for bs, rs in groups.items()}
 
@@ -193,7 +204,7 @@ def plot_sweep(groups, xkey, xlabel, ylabel, title, out_path):
     plt.close(fig)
 
 
-def plot_optimal_hp(best_wd, best_lr, out_path):
+def plot_optimal_hp(best_wd, best_lr, out_path, title_prefix=""):
     fig, ax = plt.subplots(figsize=(8, 6))
     all_bs = sorted(set(best_wd) | set(best_lr))
 
@@ -226,7 +237,7 @@ def plot_optimal_hp(best_wd, best_lr, out_path):
     ax.set_xticklabels([str(b) for b in all_bs])
     ax.set_xlabel("Batch Size B")
     ax.set_ylabel("Optimal HP Value")
-    ax.set_title("Optimal HP Value vs Batch Size")
+    ax.set_title(with_prefix(title_prefix, "Optimal HP Value vs Batch Size"))
     ax.grid(True, which="both", alpha=0.3)
     ax.legend()
     fig.tight_layout()
@@ -293,6 +304,11 @@ def main():
         default="mup_tiniest_1L",
         help="model size; sets TOTAL_TOKENS = 20 * params",
     )
+    parser.add_argument(
+        "--title_prefix",
+        default="",
+        help='prepended to plot titles, e.g. "1 layer transformer"',
+    )
     args = parser.parse_args()
 
     total_tokens = 20 * MODEL_PARAMS[args.model]
@@ -311,8 +327,14 @@ def main():
     ylabel = "Validation Loss"
     xlabel = r"AdamW timescale $\tau$"
 
-    wd_groups = group_by_bs([r for r in runs if np.isclose(r["lr"], args.wd_sweep_lr)])
-    lr_groups = group_by_bs([r for r in runs if np.isclose(r["wd"], args.lr_sweep_wd)])
+    wd_groups = drop_single_point(
+        group_by_bs([r for r in runs if np.isclose(r["lr"], args.wd_sweep_lr)]),
+        "weight decay sweep",
+    )
+    lr_groups = drop_single_point(
+        group_by_bs([r for r in runs if np.isclose(r["wd"], args.lr_sweep_wd)]),
+        "learning rate sweep",
+    )
     best_wd = best_per_bs(wd_groups)
     best_lr = best_per_bs(lr_groups)
 
@@ -323,7 +345,10 @@ def main():
             "tau",
             xlabel,
             ylabel,
-            rf"Sweeping weight decay $\lambda$ ($\eta$ = {args.wd_sweep_lr:g})",
+            with_prefix(
+                args.title_prefix,
+                rf"Sweeping weight decay $\lambda$ ($\eta$ = {args.wd_sweep_lr:g})",
+            ),
             p,
         )
         print(f"[saved] {p}")
@@ -337,7 +362,10 @@ def main():
             "tau",
             xlabel,
             ylabel,
-            rf"Sweeping learning rate $\eta$ ($\lambda$ = {args.lr_sweep_wd:g})",
+            with_prefix(
+                args.title_prefix,
+                rf"Sweeping learning rate $\eta$ ($\lambda$ = {args.lr_sweep_wd:g})",
+            ),
             p,
         )
         print(f"[saved] {p}")
@@ -346,7 +374,7 @@ def main():
 
     if best_wd or best_lr:
         p = os.path.join(args.out_dir, "optimal_hp.png")
-        plot_optimal_hp(best_wd, best_lr, p)
+        plot_optimal_hp(best_wd, best_lr, p, args.title_prefix)
         print(f"[saved] {p}")
 
     if wd_groups:
